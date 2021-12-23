@@ -76,4 +76,40 @@ router.delete("/menu/:removeGender", async (req, res) => {
   res.json(setting);
 });
 
+router.get("/about", async (req, res) => {
+  const about = await Setting.findOne({}, {}).select("about");
+  res.json(about);
+});
+
+router.get("/contact", async (req, res) => {
+  const contact = await Setting.findOne({}, {}).select("contact");
+  res.json(contact);
+});
+
+router.post("/about", async (req, res) => {
+  const about = { about: req.body.about };
+
+  Setting.countDocuments({}, async (err, count) => {
+    if (count == 0) {
+      let setting = new Setting(about);
+      await setting.save();
+    } else {
+      let setting = await Setting.findOneAndUpdate({}, about, { new: true });
+    }
+  });
+});
+
+router.post("/contact", async (req, res) => {
+  const contact = { contact: req.body.contact };
+
+  Setting.countDocuments({}, async (err, count) => {
+    if (count == 0) {
+      let setting = new Setting(contact);
+      await setting.save();
+    } else {
+      let setting = await Setting.findOneAndUpdate({}, contact, { new: true });
+    }
+  });
+});
+
 module.exports = router;
